@@ -177,7 +177,7 @@ func (self *RedisCluster) KeyForRequest(cmd string, args ...interface{}) string 
 	if cmd == "info" ||
 		cmd == "multi" ||
 		cmd == "exec" ||
-		cmd == "slaveof" ||
+		cmd == "subordinateof" ||
 		cmd == "config" ||
 		cmd == "shutdown" {
 		return ""
