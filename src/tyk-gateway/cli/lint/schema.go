@@ -54,7 +54,7 @@ const confSchema = `{
 	"allow_insecure_configs": {
 		"type": "boolean"
 	},
-	"allow_master_keys": {
+	"allow_main_keys": {
 		"type": "boolean"
 	},
 	"allow_remote_config": {
@@ -556,7 +556,7 @@ const confSchema = `{
 			}
 		}
 	},
-	"slave_options": {
+	"subordinate_options": {
 		"type": ["object", "null"],
 		"additionalProperties": false,
 		"properties": {

@@ -150,9 +150,9 @@ func (r *RPCStorageHandler) Connect() bool {
 		panic("connID is too long")
 	}
 
-	if slaveOptions := config.Global().SlaveOptions; slaveOptions.UseSSL {
+	if subordinateOptions := config.Global().SubordinateOptions; subordinateOptions.UseSSL {
 		clientCfg := &tls.Config{
-			InsecureSkipVerify: slaveOptions.SSLInsecureSkipVerify,
+			InsecureSkipVerify: subordinateOptions.SSLInsecureSkipVerify,
 		}
 
 		RPCCLientSingleton = gorpc.NewTLSClient(r.Address, clientCfg)
@@ -166,7 +166,7 @@ func (r *RPCStorageHandler) Connect() bool {
 
 	RPCCLientSingleton.OnConnect = r.OnConnectFunc
 
-	RPCCLientSingleton.Conns = config.Global().SlaveOptions.RPCPoolSize
+	RPCCLientSingleton.Conns = config.Global().SubordinateOptions.RPCPoolSize
 	if RPCCLientSingleton.Conns == 0 {
 		RPCCLientSingleton.Conns = 20
 	}
@@ -177,11 +177,11 @@ func (r *RPCStorageHandler) Connect() bool {
 			KeepAlive: 30 * time.Second,
 		}
 
-		useSSL := config.Global().SlaveOptions.UseSSL
+		useSSL := config.Global().SubordinateOptions.UseSSL
 
 		if useSSL {
 			cfg := &tls.Config{
-				InsecureSkipVerify: config.Global().SlaveOptions.SSLInsecureSkipVerify,
+				InsecureSkipVerify: config.Global().SubordinateOptions.SSLInsecureSkipVerify,
 			}
 
 			conn, err = tls.DialWithDialer(dialer, "tcp", addr, cfg)
@@ -294,7 +294,7 @@ func (r *RPCStorageHandler) ReAttemptLogin(err error) bool {
 func (r *RPCStorageHandler) GroupLogin() bool {
 	groupLoginData := GroupLoginRequest{
 		UserKey: r.UserKey,
-		GroupID: config.Global().SlaveOptions.GroupID,
+		GroupID: config.Global().SubordinateOptions.GroupID,
 	}
 	ok, err := RPCFuncClientSingleton.CallTimeout("LoginWithGroup", groupLoginData, GlobalRPCCallTimeout)
 	if err != nil {
@@ -339,7 +339,7 @@ func (r *RPCStorageHandler) Login() bool {
 	}
 
 	// If we have a group ID, lets login as a group
-	if config.Global().SlaveOptions.GroupID != "" {
+	if config.Global().SubordinateOptions.GroupID != "" {
 		return r.GroupLogin()
 	}
 
@@ -386,7 +386,7 @@ func (r *RPCStorageHandler) GetKey(keyName string) (string, error) {
 
 func (r *RPCStorageHandler) GetRawKey(keyName string) (string, error) {
 	// Check the cache first
-	if config.Global().SlaveOptions.EnableRPCCache {
+	if config.Global().SubordinateOptions.EnableRPCCache {
 		log.Debug("Using cache for: ", keyName)
 		cachedVal, found := RPCGlobalCache.Get(keyName)
 		log.Debug("--> Found? ", found)
@@ -413,7 +413,7 @@ func (r *RPCStorageHandler) GetRawKey(keyName string) (string, error) {
 		log.Debug("Error trying to get value:", err)
 		return "", storage.ErrKeyNotFound
 	}
-	if config.Global().SlaveOptions.EnableRPCCache {
+	if config.Global().SubordinateOptions.EnableRPCCache {
 		// Cache key
 		RPCGlobalCache.Set(keyName, value, cache.DefaultExpiration)
 	}
@@ -904,7 +904,7 @@ func (r *RPCStorageHandler) CheckForReload(orgId string) {
 }
 
 func (r *RPCStorageHandler) StartRPCLoopCheck(orgId string) {
-	if config.Global().SlaveOptions.DisableKeySpaceSync {
+	if config.Global().SubordinateOptions.DisableKeySpaceSync {
 		return
 	}
 
@@ -952,7 +952,7 @@ func (r *RPCStorageHandler) CheckForKeyspaceChanges(orgId string) {
 	var req interface{}
 
 	reqData := map[string]string{}
-	if groupID := config.Global().SlaveOptions.GroupID; groupID == "" {
+	if groupID := config.Global().SubordinateOptions.GroupID; groupID == "" {
 		funcName = "GetKeySpaceUpdate"
 		req = orgId
 		reqData["orgId"] = orgId
@@ -998,7 +998,7 @@ func getSessionAndCreate(keyName string, r *RPCStorageHandler) {
 	newKeyName := "apikey-" + storage.HashStr(keyName)
 	sessionString, err := r.GetRawKey(keyName)
 	if err != nil {
-		log.Error("Key not found in master - skipping")
+		log.Error("Key not found in main - skipping")
 	} else {
 		handleAddKey(keyName, newKeyName[7:], sessionString, "-1")
 	}

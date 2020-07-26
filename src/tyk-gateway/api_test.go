@@ -139,8 +139,8 @@ func TestKeyHandler(t *testing.T) {
 	})
 
 	// Access right not specified
-	masterKey := createStandardSession()
-	masterKeyJSON, _ := json.Marshal(masterKey)
+	mainKey := createStandardSession()
+	mainKeyJSON, _ := json.Marshal(mainKey)
 
 	// with access
 	withAccess := createStandardSession()
@@ -177,8 +177,8 @@ func TestKeyHandler(t *testing.T) {
 
 	t.Run("Create key", func(t *testing.T) {
 		ts.Run(t, []test.TestCase{
-			// Master keys should be disabled by default
-			{Method: "POST", Path: "/tyk/keys/create", Data: string(masterKeyJSON), AdminAuth: true, Code: 400, BodyMatch: "Failed to create key, keys must have at least one Access Rights record set."},
+			// Main keys should be disabled by default
+			{Method: "POST", Path: "/tyk/keys/create", Data: string(mainKeyJSON), AdminAuth: true, Code: 400, BodyMatch: "Failed to create key, keys must have at least one Access Rights record set."},
 			{Method: "POST", Path: "/tyk/keys/create", Data: string(withAccessJSON), AdminAuth: true, Code: 200},
 		}...)
 	})

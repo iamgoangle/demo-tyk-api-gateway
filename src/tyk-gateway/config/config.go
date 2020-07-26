@@ -97,7 +97,7 @@ type WebHookHandlerConf struct {
 	EventTimeout int64             `bson:"event_timeout" json:"event_timeout"`
 }
 
-type SlaveOptionsConfig struct {
+type SubordinateOptionsConfig struct {
 	UseRPC                          bool   `json:"use_rpc"`
 	UseSSL                          bool   `json:"use_ssl"`
 	SSLInsecureSkipVerify           bool   `json:"ssl_insecure_skip_verify"`
@@ -214,7 +214,7 @@ type Config struct {
 	UseAsyncSessionWrite              bool                                  `json:"optimisations_use_async_session_write"`
 	SessionUpdatePoolSize             int                                   `json:"session_update_pool_size"`
 	SessionUpdateBufferSize           int                                   `json:"session_update_buffer_size"`
-	AllowMasterKeys                   bool                                  `json:"allow_master_keys"`
+	AllowMainKeys                   bool                                  `json:"allow_main_keys"`
 	HashKeys                          bool                                  `json:"hash_keys"`
 	HashKeyFunction                   string                                `json:"hash_key_function"`
 	SuppressRedisSignalReload         bool                                  `json:"suppress_redis_signal_reload"`
@@ -245,7 +245,7 @@ type Config struct {
 	OauthTokenExpire                  int32                                 `json:"oauth_token_expire"`
 	OauthTokenExpiredRetainPeriod     int32                                 `json:"oauth_token_expired_retain_period"`
 	OauthRedirectUriSeparator         string                                `json:"oauth_redirect_uri_separator"`
-	SlaveOptions                      SlaveOptionsConfig                    `json:"slave_options"`
+	SubordinateOptions                      SubordinateOptionsConfig                    `json:"subordinate_options"`
 	DisableVirtualPathBlobs           bool                                  `json:"disable_virtual_path_blobs"`
 	LocalSessionCache                 LocalSessionCacheConf                 `json:"local_session_cache"`
 	HttpServerOptions                 HttpServerOptionsConfig               `json:"http_server_options"`
